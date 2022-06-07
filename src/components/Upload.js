@@ -3,34 +3,23 @@ import { GrCloudUpload } from "react-icons/gr";
 import { MdDoneAll } from "react-icons/md";
 import axios from "axios";
 function Upload() {
-  const [file, setFile] = useState(false);
+  const [file, setFile] = useState();
   const [imagefile, setImagefile] = useState("");
   const[photo,setPhoto]=useState("")
 
   const UploadPhoto = () => {
     const image = new FormData();
     image.append("file", imagefile);
-
-    // fetch(" https://ff7d-103-163-182-3.ngrok.io/api/v1/prediction/images/", {
-    //   method: "post",
-    //   headers: {
-    //     'Content-Length': file.length,
-    //     "Content-Type": 'multipart/form-data',
-    //     Authorization: "Bearer " + localStorage.getItem("accesstoken"),
-    //   },
-    //   body: JSON.stringify(image)      
-    // })
     axios.post("https://ff7d-103-163-182-3.ngrok.io/api/v1/prediction/images/", image, {
       headers: {
             "content-Type": 'multipart/form-data',
             Authorization: "Bearer " + localStorage.getItem("accesstoken"),
           },
     })
-      // .then((res) => res.json())
       .then((res) => {
-        console.log(res)
+        console.log(res.data)
 
-        // setPhoto(data.);
+        setFile(res.data);
       })
       .catch((err) => console.log(err));
   };
@@ -63,7 +52,7 @@ function Upload() {
               </div>
               <input
                type="file" onChange={(e) => setImagefile(e.target.files[0])}
-               className="visibile-0"
+               className="invisible"
               />
             </label>
           </div>
@@ -85,9 +74,23 @@ function Upload() {
       <h2 className="font-bold text-2xl text-center">
             OUTPUT
           </h2>
-          <div className="relative mt-6 m-auto md:w-11/12 h-[500px]  bg-gradient-to-r from-gray-500 to-gray-900 flex items-center justify-center text-center rounded-lg">
-           <h3 className="text-xl font-bold uppercase text-white">Result here</h3>
-           <img src={photo? photo:""} alt="image loading..."/>
+          <div className="relative mt-6 m-auto md:w-11/12 h-[500px]  bg-gradient-to-r from-gray-500 to-teal-200  text-center rounded-lg">
+           {/* <h3 className="text-xl font-bold uppercase text-white">Result here</h3> */}
+           {file ?
+          <div className="flex items-center justify-items-stretch w-full h-full from-gray-500">
+
+           <img src={"https://ff7d-103-163-182-3.ngrok.io"+file.raw_image.image} alt="image loading..." className="w-9/12 h-full"/>
+           <div className="ml-5">
+          <h2 className="">{file.disease.name}</h2>
+          <p>{file.disease.description}</p>
+          <h4 className="">Cure - <span className="text-extrabold text-green-700">{file.disease.cure.name}</span></h4>
+          <p>Description - {file.disease.cure.description}</p>
+          </div> 
+           </div>
+          :
+          null
+          }
+
            </div>
       </div>
       {/* result end */}
