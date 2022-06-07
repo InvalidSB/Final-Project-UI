@@ -12,6 +12,9 @@
     hover:bg-transparent hover:text-black rounded-md
   }
 }
+*{
+  scroll-behavior: smooth;
+}
 
 
 .video-docker video {
